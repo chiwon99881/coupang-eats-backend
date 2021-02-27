@@ -21,6 +21,7 @@ import { User } from './users/entities/users.entity';
         DATABASE_PORT: Joi.string().required(),
         DATABASE_USERNAME: Joi.string().required(),
         DATABASE_NAME: Joi.string().required(),
+        PRIVATE_KEY: Joi.string().required(),
       }),
     }),
     GraphQLModule.forRoot({
@@ -38,7 +39,7 @@ import { User } from './users/entities/users.entity';
       entities: [Restaurant, User],
     }),
     RestaurantsModule,
-    CoreModule,
+    CoreModule.forRoot({ privateKey: process.env.PRIVATE_KEY }),
     UsersModule,
   ],
   controllers: [],

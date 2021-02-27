@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CoreService } from 'src/core/core.service';
 import { Repository } from 'typeorm';
 import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
@@ -9,6 +10,7 @@ import { User } from './entities/users.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
+    private readonly coreService: CoreService,
   ) {}
 
   async createUser(
@@ -54,9 +56,10 @@ export class UsersService {
           error: 'Wrong password.',
         };
       }
+      const token = this.coreService.sign(user.id);
       return {
         ok: true,
-        token: 'soon',
+        token,
       };
     } catch (error) {
       return {

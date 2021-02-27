@@ -29,3 +29,7 @@
   ```bash
   npm install bcrypt
   ```
+
+- #06 Jwt (Generated token)
+
+  > Our Custom Module for Generated Token
