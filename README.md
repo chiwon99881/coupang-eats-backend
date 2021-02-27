@@ -21,3 +21,5 @@
   ```
 
 - #03 Restaurant Entity, DTO, Create Resolver
+
+- #04 User Entity, DTO, Create Resolver, Relations User with Restaurant

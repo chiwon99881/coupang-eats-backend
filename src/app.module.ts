@@ -6,6 +6,8 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
 import { CoreModule } from './core/core.module';
 import * as Joi from 'joi';
 import { Restaurant } from './restaurants/entities/restaurants.entity';
+import { UsersModule } from './users/users.module';
+import { User } from './users/entities/users.entity';
 
 @Module({
   imports: [
@@ -33,10 +35,11 @@ import { Restaurant } from './restaurants/entities/restaurants.entity';
       database: process.env.DATABASE_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [Restaurant],
+      entities: [Restaurant, User],
     }),
     RestaurantsModule,
     CoreModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
