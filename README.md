@@ -37,3 +37,5 @@
 - #07 JwtMiddleware
 
 - #08 CurrentUser Decorator, Guard Based Role
+
+- #09 Category Entity, Create Restaurant Mutation

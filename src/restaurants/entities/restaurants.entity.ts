@@ -3,6 +3,7 @@ import { CoreEntity } from 'src/core/entities/core.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { IsString } from 'class-validator';
 import { User } from 'src/users/entities/users.entity';
+import { Category } from './category.entity';
 
 @InputType('RestaurantInputType', { isAbstract: true })
 @ObjectType()
@@ -33,4 +34,10 @@ export class Restaurant extends CoreEntity {
     onDelete: 'CASCADE',
   })
   owner: User;
+
+  @Field((type) => Category)
+  @ManyToOne((type) => Category, (category) => category.restaurants, {
+    onDelete: 'CASCADE',
+  })
+  category: Category;
 }

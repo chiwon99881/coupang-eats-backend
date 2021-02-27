@@ -7,6 +7,7 @@ import {
   CreateRestaurantOutput,
 } from './dtos/create-restaurant.dto';
 import { MyRestaurantsOutput } from './dtos/my-restaurants.dto';
+import { Category } from './entities/category.entity';
 import { Restaurant } from './entities/restaurants.entity';
 
 @Injectable()
@@ -14,7 +15,7 @@ export class RestaurantsService {
   constructor(
     @InjectRepository(Restaurant)
     private readonly restaurants: Repository<Restaurant>,
-    @InjectRepository(User) private readonly users: Repository<User>,
+    @InjectRepository(Category) private readonly category: Repository<Category>,
   ) {}
 
   async createRestaurant(
@@ -22,10 +23,25 @@ export class RestaurantsService {
     createRestaurantInput: CreateRestaurantInput,
   ): Promise<CreateRestaurantOutput> {
     try {
+      const { address, description, name, tel } = createRestaurantInput;
+      const categoryId = createRestaurantInput.categoryId;
+      const category = await this.category.findOne({ id: categoryId });
+      if (!category) {
+        return {
+          ok: false,
+          error: 'This category not found.',
+        };
+      }
       await this.restaurants.save(
-        this.restaurants.create(createRestaurantInput),
+        this.restaurants.create({
+          owner: user,
+          name,
+          tel,
+          description,
+          address,
+          category,
+        }),
       );
-
       return {
         ok: true,
       };
