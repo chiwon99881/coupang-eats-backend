@@ -7,6 +7,10 @@ import {
   CreateRestaurantOutput,
 } from './dtos/create-restaurant.dto';
 import {
+  GetRestaurantInput,
+  GetRestaurantOutput,
+} from './dtos/get-restaurant.dto';
+import {
   GetRestaurantsInput,
   GetRestaurantsOutput,
 } from './dtos/get-restaurants.dto';
@@ -101,6 +105,30 @@ export class RestaurantsService {
       return {
         ok: true,
         restaurants,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async getRestaurant(
+    getRestaurantInput: GetRestaurantInput,
+  ): Promise<GetRestaurantOutput> {
+    try {
+      const { id } = getRestaurantInput;
+      const restaurant = await this.restaurants.findOne({ id });
+      if (!restaurant) {
+        return {
+          ok: false,
+          error: 'Restaurant not found.',
+        };
+      }
+      return {
+        ok: true,
+        restaurant,
       };
     } catch (error) {
       return {

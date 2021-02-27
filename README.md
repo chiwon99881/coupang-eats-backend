@@ -41,3 +41,5 @@
 - #09 Category Entity, Create Restaurant Mutation
 
 - #10 Get Restaurants By Category
+
+- #11 Get Restaurant By Id
