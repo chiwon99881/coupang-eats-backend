@@ -39,3 +39,5 @@
 - #08 CurrentUser Decorator, Guard Based Role
 
 - #09 Category Entity, Create Restaurant Mutation
+
+- #10 Get Restaurants By Category

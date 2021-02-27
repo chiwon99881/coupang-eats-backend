@@ -6,6 +6,10 @@ import {
   CreateRestaurantInput,
   CreateRestaurantOutput,
 } from './dtos/create-restaurant.dto';
+import {
+  GetRestaurantsInput,
+  GetRestaurantsOutput,
+} from './dtos/get-restaurants.dto';
 import { MyRestaurantsOutput } from './dtos/my-restaurants.dto';
 import { Restaurant } from './entities/restaurants.entity';
 import { RestaurantsService } from './restaurants.service';
@@ -30,5 +34,12 @@ export class RestaurantsResolver {
   @Role(UserRole.Owner)
   myRestaurants(@CurrentUser() user: User): Promise<MyRestaurantsOutput> {
     return this.restaurantsService.myRestaurants(user);
+  }
+
+  @Query((returns) => GetRestaurantsOutput)
+  getRestaurants(
+    @Args('input') getRestaurantsInput: GetRestaurantsInput,
+  ): Promise<GetRestaurantsOutput> {
+    return this.restaurantsService.getRestaurants(getRestaurantsInput);
   }
 }

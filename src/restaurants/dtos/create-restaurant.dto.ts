@@ -8,6 +8,7 @@ export class CreateRestaurantInput extends PickType(Restaurant, [
   'description',
   'address',
   'tel',
+  'coverImage',
 ]) {
   @Field((type) => Number)
   categoryId: number;
