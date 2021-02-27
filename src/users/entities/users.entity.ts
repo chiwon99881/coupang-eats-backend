@@ -7,7 +7,8 @@ import {
 import { IsEmail, IsEnum, IsString } from 'class-validator';
 import { CoreEntity } from 'src/core/entities/core.entity';
 import { Restaurant } from 'src/restaurants/entities/restaurants.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 export enum UserRole {
   Client = 'Client',
@@ -61,4 +62,18 @@ export class User extends CoreEntity {
     nullable: true,
   })
   restaurants?: Restaurant[];
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword(): Promise<void> {
+    const hashed = await bcrypt.hash(this.password, 10);
+    this.password = hashed;
+  }
+
+  async checkPassword(plainPassword: string): Promise<boolean> {
+    if (!plainPassword) {
+      return false;
+    }
+    return await bcrypt.compare(plainPassword, this.password);
+  }
 }
