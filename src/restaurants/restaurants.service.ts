@@ -1,5 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/users.entity';
 import { Repository } from 'typeorm';
 import {
   CreateRestaurantInput,
@@ -13,9 +14,11 @@ export class RestaurantsService {
   constructor(
     @InjectRepository(Restaurant)
     private readonly restaurants: Repository<Restaurant>,
+    @InjectRepository(User) private readonly users: Repository<User>,
   ) {}
 
   async createRestaurant(
+    user: User,
     createRestaurantInput: CreateRestaurantInput,
   ): Promise<CreateRestaurantOutput> {
     try {
@@ -34,9 +37,9 @@ export class RestaurantsService {
     }
   }
 
-  async myRestaurants(): Promise<MyRestaurantsOutput> {
+  async myRestaurants(user: User): Promise<MyRestaurantsOutput> {
     try {
-      const restaurants = await this.restaurants.find();
+      const restaurants = await this.restaurants.find({ owner: user });
       if (restaurants) {
         return {
           ok: true,

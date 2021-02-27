@@ -14,6 +14,8 @@ import { Restaurant } from './restaurants/entities/restaurants.entity';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/users.entity';
 import { JwtMiddleware } from './core/core.middleware';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './core/core.guard';
 
 @Module({
   imports: [
@@ -32,6 +34,10 @@ import { JwtMiddleware } from './core/core.middleware';
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
+      context: ({ req }) => {
+        req['user'] = req.user;
+        return req;
+      },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -49,7 +55,12 @@ import { JwtMiddleware } from './core/core.middleware';
     UsersModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

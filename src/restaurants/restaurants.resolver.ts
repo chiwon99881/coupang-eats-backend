@@ -1,4 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { CurrentUser } from 'src/core/core.decorator';
+import { Role } from 'src/core/core.guard';
+import { User, UserRole } from 'src/users/entities/users.entity';
 import {
   CreateRestaurantInput,
   CreateRestaurantOutput,
@@ -12,14 +15,20 @@ export class RestaurantsResolver {
   constructor(private readonly restaurantsService: RestaurantsService) {}
 
   @Mutation((returns) => CreateRestaurantOutput)
+  @Role(UserRole.Owner)
   createRestaurant(
+    @CurrentUser() user: User,
     @Args('input') createRestaurantInput: CreateRestaurantInput,
   ): Promise<CreateRestaurantOutput> {
-    return this.restaurantsService.createRestaurant(createRestaurantInput);
+    return this.restaurantsService.createRestaurant(
+      user,
+      createRestaurantInput,
+    );
   }
 
   @Query((returns) => MyRestaurantsOutput)
-  myRestaurants(): Promise<MyRestaurantsOutput> {
-    return this.restaurantsService.myRestaurants();
+  @Role(UserRole.Owner)
+  myRestaurants(@CurrentUser() user: User): Promise<MyRestaurantsOutput> {
+    return this.restaurantsService.myRestaurants(user);
   }
 }

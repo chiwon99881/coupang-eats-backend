@@ -10,15 +10,19 @@ export class JwtMiddleware implements NestMiddleware {
     private readonly usersService: UsersService,
   ) {}
   async use(req: Request, res: Response, next: NextFunction) {
-    const encrypted = req.headers['x-jwt'];
-    if (encrypted) {
-      const decrypted = this.coreService.verify(encrypted.toString());
-      const userId = decrypted['id'];
-      if (userId) {
-        const currentUser = await this.usersService.findUserById(userId);
-        req['user'] = currentUser;
+    try {
+      const encrypted = req.headers['x-jwt'];
+      if (encrypted) {
+        const decrypted = this.coreService.verify(encrypted.toString());
+        const userId = decrypted['id'];
+        if (userId) {
+          const currentUser = await this.usersService.findUserById(userId);
+          req['user'] = currentUser;
+        }
       }
+      next();
+    } catch (e) {
+      throw new Error(e);
     }
-    next();
   }
 }

@@ -35,3 +35,5 @@
   > Our Custom Module for Generated Token
 
 - #07 JwtMiddleware
+
+- #08 CurrentUser Decorator, Guard Based Role
