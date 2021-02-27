@@ -33,3 +33,5 @@
 - #06 Jwt (Generated token)
 
   > Our Custom Module for Generated Token
+
+- #07 JwtMiddleware

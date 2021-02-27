@@ -1,4 +1,5 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
+import { UsersService } from 'src/users/users.service';
 import { PRIVATE_KEY } from './core.constants';
 import { CoreService } from './core.service';
 

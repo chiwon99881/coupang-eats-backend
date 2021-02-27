@@ -68,4 +68,17 @@ export class UsersService {
       };
     }
   }
+
+  async findUserById(userId: number): Promise<User | null> {
+    try {
+      const user = await this.users.findOne({ id: userId });
+      if (user) {
+        return user;
+      }
+      return null;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 }

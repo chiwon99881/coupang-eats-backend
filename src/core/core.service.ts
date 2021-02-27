@@ -8,4 +8,8 @@ export class CoreService {
   sign(userId: number): string {
     return jwt.sign({ id: userId }, this.PRIVATE_KEY);
   }
+
+  verify(token: string): string | object {
+    return jwt.verify(token, this.PRIVATE_KEY);
+  }
 }
