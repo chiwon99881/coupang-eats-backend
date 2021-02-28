@@ -43,3 +43,5 @@
 - #10 Get Restaurants By Category
 
 - #11 Get Restaurant By Id
+
+- #12 Logged Check Guard

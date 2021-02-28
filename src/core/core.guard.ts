@@ -31,3 +31,15 @@ export class AuthGuard implements CanActivate {
     }
   }
 }
+
+@Injectable()
+export class isLoggedGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const ctx = GqlExecutionContext.create(context).getContext();
+    if(ctx.user) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
