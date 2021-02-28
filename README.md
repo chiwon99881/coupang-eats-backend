@@ -45,3 +45,5 @@
 - #11 Get Restaurant By Id
 
 - #12 Logged Check Guard
+
+- #13 Dish, DishOption Entity

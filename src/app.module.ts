@@ -17,6 +17,8 @@ import { JwtMiddleware } from './core/core.middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './core/core.guard';
 import { Category } from './restaurants/entities/category.entity';
+import { Dish } from './restaurants/entities/dish.entity';
+import { DishOption } from './restaurants/entities/dish-option.entity';
 
 @Module({
   imports: [
@@ -49,7 +51,7 @@ import { Category } from './restaurants/entities/category.entity';
       database: process.env.DATABASE_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [Restaurant, User, Category],
+      entities: [Restaurant, User, Category, Dish, DishOption],
     }),
     RestaurantsModule,
     CoreModule.forRoot({ privateKey: process.env.PRIVATE_KEY }),
