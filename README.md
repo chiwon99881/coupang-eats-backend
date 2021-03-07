@@ -47,3 +47,5 @@
 - #12 Logged Check Guard
 
 - #13 Dish, DishOption Entity
+
+- #14 Add Dish Mutation with JSON Type Column

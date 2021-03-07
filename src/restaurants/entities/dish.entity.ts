@@ -1,9 +1,36 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { IsNumber, IsString } from 'class-validator';
+import { IsJSON, IsNumber, IsString } from 'class-validator';
 import { CoreEntity } from 'src/core/entities/core.entity';
-import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
-import { DishOption } from './dish-option.entity';
+import { Column, Entity, ManyToOne, RelationId } from 'typeorm';
 import { Restaurant } from './restaurants.entity';
+
+@InputType('OptionChoiceInputType', { isAbstract: true })
+@ObjectType()
+export class OptionChoice {
+  @Field((type) => String)
+  @IsString()
+  kind: string;
+
+  @Field((type) => Number, { nullable: true })
+  @IsNumber()
+  extraPrice?: number;
+}
+
+@InputType('DishOptionInputType', { isAbstract: true })
+@ObjectType()
+export class DishOption {
+  @Field((type) => String)
+  @IsString()
+  option: string;
+
+  @Field((type) => [OptionChoice], { nullable: true })
+  @IsString()
+  choice?: OptionChoice[];
+
+  @Field((type) => Number, { nullable: true })
+  @IsNumber()
+  extraPrice?: number;
+}
 
 @InputType('DishInputType', { isAbstract: true })
 @ObjectType()
@@ -30,9 +57,11 @@ export class Dish extends CoreEntity {
   })
   restaurant: Restaurant;
 
+  @RelationId((dish: Dish) => dish.restaurant)
+  restaurantId: number;
+
   @Field((type) => [DishOption], { nullable: true })
-  @ManyToMany((type) => DishOption, (dishOption) => dishOption.dish, {
-    nullable: true,
-  })
+  @Column({ type: 'json', nullable: true })
+  @IsJSON()
   dishOption?: DishOption[];
 }
