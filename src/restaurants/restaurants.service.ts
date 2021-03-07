@@ -7,6 +7,10 @@ import {
   CreateRestaurantOutput,
 } from './dtos/create-restaurant.dto';
 import {
+  EditRestaurantInput,
+  EditRestaurantOutput,
+} from './dtos/edit-restaurant.dto';
+import {
   GetRestaurantInput,
   GetRestaurantOutput,
 } from './dtos/get-restaurant.dto';
@@ -57,6 +61,57 @@ export class RestaurantsService {
           category,
         }),
       );
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async editRestaurant(
+    user: User,
+    editRestaurantInput: EditRestaurantInput,
+  ): Promise<EditRestaurantOutput> {
+    try {
+      const { id: restaurantId } = editRestaurantInput;
+      const restaurant = await this.restaurants.findOne({ id: restaurantId });
+      if (!restaurant) {
+        return {
+          ok: false,
+          error: 'Restaurant not found.',
+        };
+      }
+      if (user.id !== restaurant.owner.id) {
+        return {
+          ok: false,
+          error: "You can't do this.",
+        };
+      }
+      if (editRestaurantInput.categoryId) {
+        const category = await this.category.findOne({
+          id: editRestaurantInput.categoryId,
+        });
+        if (!category) {
+          return {
+            ok: false,
+            error: 'Category not found.',
+          };
+        }
+        delete editRestaurantInput.categoryId;
+        await this.restaurants.update(
+          { id: restaurantId },
+          { category, ...editRestaurantInput },
+        );
+      } else {
+        await this.restaurants.update(
+          { id: restaurantId },
+          { ...editRestaurantInput },
+        );
+      }
       return {
         ok: true,
       };

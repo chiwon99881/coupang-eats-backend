@@ -53,3 +53,5 @@
 - #15 Delete Dish
 
 - #16 Get Dish and Edit Dish
+
+- #17 Edit Restaurant
