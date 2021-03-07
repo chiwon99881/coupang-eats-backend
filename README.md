@@ -49,3 +49,5 @@
 - #13 Dish, DishOption Entity
 
 - #14 Add Dish Mutation with JSON Type Column
+
+- #15 Delete Dish

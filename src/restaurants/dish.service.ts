@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/users.entity';
 import { Repository } from 'typeorm';
 import { AddDishInput, AddDishOutput } from './dtos/add-dish.dto';
+import { DeleteDishInput, DeleteDishOutput } from './dtos/delete-dish.dto';
 import { Dish } from './entities/dish.entity';
 import { Restaurant } from './entities/restaurants.entity';
 
@@ -36,6 +37,40 @@ export class DishService {
       await this.dishes.save(
         this.dishes.create({ ...addDishInput, restaurant }),
       );
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async deleteDish(
+    user: User,
+    deleteDishInput: DeleteDishInput,
+  ): Promise<DeleteDishOutput> {
+    try {
+      const { id: dishId } = deleteDishInput;
+      const dish = await this.dishes.findOne({ id: dishId });
+      if (!dish) {
+        return {
+          ok: false,
+          error: 'Dish not found.',
+        };
+      }
+      const restaurant = await this.restaurants.findOne({
+        id: dish.restaurantId,
+      });
+      if (restaurant.owner.id !== user.id) {
+        return {
+          ok: false,
+          error: "You can't do this.",
+        };
+      }
+      await this.dishes.delete({ id: dish.id });
       return {
         ok: true,
       };
