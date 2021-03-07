@@ -148,7 +148,7 @@ export class RestaurantsService {
     getRestaurantsInput: GetRestaurantsInput,
   ): Promise<GetRestaurantsOutput> {
     try {
-      const { categoryId } = getRestaurantsInput;
+      const { categoryId, paginated } = getRestaurantsInput;
       const category = await this.category.findOne({ id: categoryId });
       if (!category) {
         return {
@@ -156,10 +156,19 @@ export class RestaurantsService {
           error: 'category not found.',
         };
       }
-      const restaurants = await this.restaurants.find({ category });
+      const [
+        restaurants,
+        restaurantCount,
+      ] = await this.restaurants.findAndCount({
+        where: { category },
+        order: { id: 'DESC' },
+        skip: (paginated - 1) * 10,
+        take: paginated * 10,
+      });
       return {
         ok: true,
         restaurants,
+        restaurantCount,
       };
     } catch (error) {
       return {

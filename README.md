@@ -55,3 +55,5 @@
 - #16 Get Dish and Edit Dish
 
 - #17 Edit Restaurant
+
+- #18 Get Restaurants Pagination
