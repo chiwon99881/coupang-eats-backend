@@ -51,6 +51,11 @@ export class Dish extends CoreEntity {
   @IsNumber()
   price: number;
 
+  @Field((type) => String)
+  @Column()
+  @IsString()
+  image: string;
+
   @Field((type) => Restaurant)
   @ManyToOne((type) => Restaurant, (restaurant) => restaurant.dishes, {
     onDelete: 'CASCADE',

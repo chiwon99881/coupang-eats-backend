@@ -51,3 +51,5 @@
 - #14 Add Dish Mutation with JSON Type Column
 
 - #15 Delete Dish
+
+- #16 Get Dish and Edit Dish
