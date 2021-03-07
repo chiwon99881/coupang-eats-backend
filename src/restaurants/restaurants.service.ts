@@ -7,6 +7,10 @@ import {
   CreateRestaurantOutput,
 } from './dtos/create-restaurant.dto';
 import {
+  DeleteRestaurantInput,
+  DeleteRestaurantOutput,
+} from './dtos/delete-restaurant.dto';
+import {
   EditRestaurantInput,
   EditRestaurantOutput,
 } from './dtos/edit-restaurant.dto';
@@ -123,6 +127,37 @@ export class RestaurantsService {
     }
   }
 
+  async deleteRestaurant(
+    user: User,
+    deleteRestaurantInput: DeleteRestaurantInput,
+  ): Promise<DeleteRestaurantOutput> {
+    try {
+      const { id: restaurantId } = deleteRestaurantInput;
+      const restaurant = await this.restaurants.findOne({ id: restaurantId });
+      if (!restaurant) {
+        return {
+          ok: false,
+          error: 'Restaurant not found.',
+        };
+      }
+      if (user.id !== restaurant.owner.id) {
+        return {
+          ok: false,
+          error: "You can't do this.",
+        };
+      }
+      await this.restaurants.delete({ id: restaurant.id });
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
   async myRestaurants(user: User): Promise<MyRestaurantsOutput> {
     try {
       const restaurants = await this.restaurants.find({ owner: user });
@@ -183,7 +218,10 @@ export class RestaurantsService {
   ): Promise<GetRestaurantOutput> {
     try {
       const { id } = getRestaurantInput;
-      const restaurant = await this.restaurants.findOne({ id });
+      const restaurant = await this.restaurants.findOne(
+        { id },
+        { relations: ['dishes'] },
+      );
       if (!restaurant) {
         return {
           ok: false,

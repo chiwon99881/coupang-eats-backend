@@ -57,3 +57,5 @@
 - #17 Edit Restaurant
 
 - #18 Get Restaurants Pagination
+
+- #19 Delete Restaurant
