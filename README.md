@@ -59,3 +59,5 @@
 - #18 Get Restaurants Pagination
 
 - #19 Delete Restaurant
+
+- #20 Update User

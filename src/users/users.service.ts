@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CoreService } from 'src/core/core.service';
 import { Repository } from 'typeorm';
 import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
+import { EditUserInput, EditUserOutput } from './dtos/edit-user.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import { User } from './entities/users.entity';
 
@@ -79,6 +80,43 @@ export class UsersService {
     } catch (error) {
       console.log(error);
       return null;
+    }
+  }
+
+  async editUser(
+    user: User,
+    editUserInput: EditUserInput,
+  ): Promise<EditUserOutput> {
+    try {
+      const { id } = editUserInput;
+      if (!id) {
+        return {
+          ok: false,
+          error: 'User id required.',
+        };
+      }
+      const findUser = await this.users.findOne({ id });
+      if (!findUser) {
+        return {
+          ok: false,
+          error: 'User not found.',
+        };
+      }
+      if (user.id !== findUser.id) {
+        return {
+          ok: false,
+          error: "You can't do this.",
+        };
+      }
+      await this.users.update({ id: user.id }, { ...editUserInput });
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
     }
   }
 }

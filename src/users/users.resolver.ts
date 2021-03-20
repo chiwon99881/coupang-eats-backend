@@ -1,5 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { CurrentUser } from 'src/core/core.decorator';
 import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
+import { EditUserInput, EditUserOutput } from './dtos/edit-user.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import { User } from './entities/users.entity';
 import { UsersService } from './users.service';
@@ -18,6 +20,14 @@ export class UsersResolver {
   @Mutation((returns) => LoginOutput)
   loginUser(@Args('input') loginInput: LoginInput): Promise<LoginOutput> {
     return this.usersService.loginUser(loginInput);
+  }
+
+  @Mutation((returns) => EditUserOutput)
+  editUser(
+    @CurrentUser() user: User,
+    @Args('input') editUserInput: EditUserInput,
+  ): Promise<EditUserOutput> {
+    return this.usersService.editUser(user, editUserInput);
   }
 
   @Query((returns) => User)
