@@ -18,6 +18,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './core/core.guard';
 import { Category } from './restaurants/entities/category.entity';
 import { Dish } from './restaurants/entities/dish.entity';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -32,6 +33,8 @@ import { Dish } from './restaurants/entities/dish.entity';
         DATABASE_USERNAME: Joi.string().required(),
         DATABASE_NAME: Joi.string().required(),
         PRIVATE_KEY: Joi.string().required(),
+        MAIL_API_KEY: Joi.string().required(),
+        MAIL_DOMAIN: Joi.string().required(),
       }),
     }),
     GraphQLModule.forRoot({
@@ -55,6 +58,10 @@ import { Dish } from './restaurants/entities/dish.entity';
     RestaurantsModule,
     CoreModule.forRoot({ privateKey: process.env.PRIVATE_KEY }),
     UsersModule,
+    MailModule.forRoot({
+      mailApiKey: process.env.MAIL_API_KEY,
+      mailDomain: process.env.MAIL_DOMAIN,
+    }),
   ],
   controllers: [],
   providers: [

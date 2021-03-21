@@ -61,3 +61,5 @@
 - #19 Delete Restaurant
 
 - #20 Update User
+
+- #21 Send Verification Mail 1

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CoreService } from 'src/core/core.service';
+import { MailService } from 'src/mail/mail.service';
 import { Repository } from 'typeorm';
 import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
 import { EditUserInput, EditUserOutput } from './dtos/edit-user.dto';
@@ -12,6 +13,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
     private readonly coreService: CoreService,
+    private readonly mailService: MailService,
   ) {}
 
   async createUser(
@@ -58,6 +60,7 @@ export class UsersService {
         };
       }
       const token = this.coreService.sign(user.id);
+      this.mailService.sendMail();
       return {
         ok: true,
         token,
