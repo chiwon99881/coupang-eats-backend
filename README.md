@@ -63,3 +63,5 @@
 - #20 Update User
 
 - #21 Send Verification Mail 1
+
+- #22 Send Verification Mail 2

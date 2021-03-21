@@ -12,9 +12,7 @@ export class MailService {
     return Math.floor(Math.random() * 100000);
   }
 
-  sendMail() {
-    const code = this.generatedCode();
-
+  sendMail(code: number): void {
     const mailData = {
       from: 'chiwon99881@gmail.com',
       to: 'chiwon99881@gmail.com',
@@ -27,7 +25,9 @@ export class MailService {
       domain: this.MAIL_DOMAIN,
     });
     mailgun.messages().send(mailData, (error, body) => {
-      console.log(body, error);
+      if (error) {
+        console.log(error);
+      }
     });
   }
 }

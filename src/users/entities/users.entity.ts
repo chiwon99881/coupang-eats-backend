@@ -4,7 +4,7 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
-import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsEnum, IsString } from 'class-validator';
 import { CoreEntity } from 'src/core/entities/core.entity';
 import { Restaurant } from 'src/restaurants/entities/restaurants.entity';
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
@@ -31,6 +31,11 @@ export class User extends CoreEntity {
   @Column()
   @IsString()
   password: string;
+
+  @Field((type) => Boolean, { defaultValue: false })
+  @Column({ default: false })
+  @IsBoolean()
+  verified: boolean;
 
   @Field((type) => String, { defaultValue: 'anonymous' })
   @Column({ nullable: true, default: 'anonymous' })

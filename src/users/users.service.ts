@@ -7,11 +7,14 @@ import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
 import { EditUserInput, EditUserOutput } from './dtos/edit-user.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import { User } from './entities/users.entity';
+import { Verification } from './entities/verification.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
+    @InjectRepository(Verification)
+    private readonly verification: Repository<Verification>,
     private readonly coreService: CoreService,
     private readonly mailService: MailService,
   ) {}
@@ -31,6 +34,14 @@ export class UsersService {
       }
       const newUser = this.users.create(createUserInput);
       await this.users.save(newUser);
+      const verificationCode = this.mailService.generatedCode();
+      const verification = await this.verification.save(
+        this.verification.create({
+          userId: newUser.id,
+          code: verificationCode,
+        }),
+      );
+      this.mailService.sendMail(verification.code);
       return {
         ok: true,
         user: newUser,
@@ -60,7 +71,8 @@ export class UsersService {
         };
       }
       const token = this.coreService.sign(user.id);
-      this.mailService.sendMail();
+      const test = await this.verification.findOne({ id: 1 });
+      console.log(test);
       return {
         ok: true,
         token,

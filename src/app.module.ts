@@ -19,6 +19,7 @@ import { AuthGuard } from './core/core.guard';
 import { Category } from './restaurants/entities/category.entity';
 import { Dish } from './restaurants/entities/dish.entity';
 import { MailModule } from './mail/mail.module';
+import { Verification } from './users/entities/verification.entity';
 
 @Module({
   imports: [
@@ -53,7 +54,7 @@ import { MailModule } from './mail/mail.module';
       database: process.env.DATABASE_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [Restaurant, User, Category, Dish],
+      entities: [Restaurant, User, Category, Dish, Verification],
     }),
     RestaurantsModule,
     CoreModule.forRoot({ privateKey: process.env.PRIVATE_KEY }),
