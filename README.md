@@ -67,3 +67,5 @@
 - #22 Send Verification Mail 2
 
 - #23 Verification User Mutation
+
+- #24 Order Entity

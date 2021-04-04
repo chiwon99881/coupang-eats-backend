@@ -5,6 +5,7 @@ import { IsString } from 'class-validator';
 import { User } from 'src/users/entities/users.entity';
 import { Category } from './category.entity';
 import { Dish } from './dish.entity';
+import { Order } from 'src/orders/entities/order.entity';
 
 @InputType('RestaurantInputType', { isAbstract: true })
 @ObjectType()

@@ -20,6 +20,8 @@ import { Category } from './restaurants/entities/category.entity';
 import { Dish } from './restaurants/entities/dish.entity';
 import { MailModule } from './mail/mail.module';
 import { Verification } from './users/entities/verification.entity';
+import { OrdersModule } from './orders/orders.module';
+import { Order } from './orders/entities/order.entity';
 
 @Module({
   imports: [
@@ -54,7 +56,7 @@ import { Verification } from './users/entities/verification.entity';
       database: process.env.DATABASE_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [Restaurant, User, Category, Dish, Verification],
+      entities: [Restaurant, User, Category, Dish, Verification, Order],
     }),
     RestaurantsModule,
     CoreModule.forRoot({ privateKey: process.env.PRIVATE_KEY }),
@@ -63,6 +65,7 @@ import { Verification } from './users/entities/verification.entity';
       mailApiKey: process.env.MAIL_API_KEY,
       mailDomain: process.env.MAIL_DOMAIN,
     }),
+    OrdersModule,
   ],
   controllers: [],
   providers: [

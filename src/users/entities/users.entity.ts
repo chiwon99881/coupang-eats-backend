@@ -9,6 +9,7 @@ import { CoreEntity } from 'src/core/entities/core.entity';
 import { Restaurant } from 'src/restaurants/entities/restaurants.entity';
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Order } from 'src/orders/entities/order.entity';
 
 export enum UserRole {
   Client = 'Client',
@@ -67,6 +68,10 @@ export class User extends CoreEntity {
     nullable: true,
   })
   restaurants?: Restaurant[];
+
+  @Field(type => [Order], {nullable: true})
+  @OneToMany(type => Order, order => order.client, {nullable: true})
+  orders?: Order[];
 
   @BeforeInsert()
   @BeforeUpdate()
