@@ -3,6 +3,10 @@ import { CurrentUser } from 'src/core/core.decorator';
 import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
 import { EditUserInput, EditUserOutput } from './dtos/edit-user.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
+import {
+  VerifiedEmailInput,
+  VerifiedEmailOutput,
+} from './dtos/verified-email.dto';
 import { User } from './entities/users.entity';
 import { UsersService } from './users.service';
 
@@ -33,5 +37,13 @@ export class UsersResolver {
   @Query((returns) => User)
   findUserById(@Args('id') userId: number): Promise<User | null> {
     return this.usersService.findUserById(userId);
+  }
+
+  @Mutation((returns) => VerifiedEmailOutput)
+  verifiedEmail(
+    @CurrentUser() user: User,
+    @Args('input') verifiedEmailInput: VerifiedEmailInput,
+  ): Promise<VerifiedEmailOutput> {
+    return this.usersService.verifiedEmail(user, verifiedEmailInput);
   }
 }

@@ -65,3 +65,5 @@
 - #21 Send Verification Mail 1
 
 - #22 Send Verification Mail 2
+
+- #23 Verification User Mutation

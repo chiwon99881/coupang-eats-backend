@@ -6,6 +6,10 @@ import { Repository } from 'typeorm';
 import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
 import { EditUserInput, EditUserOutput } from './dtos/edit-user.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
+import {
+  VerifiedEmailInput,
+  VerifiedEmailOutput,
+} from './dtos/verified-email.dto';
 import { User } from './entities/users.entity';
 import { Verification } from './entities/verification.entity';
 
@@ -124,6 +128,45 @@ export class UsersService {
         };
       }
       await this.users.update({ id: user.id }, { ...editUserInput });
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async verifiedEmail(
+    user: User,
+    verifiedEmailInput: VerifiedEmailInput,
+  ): Promise<VerifiedEmailOutput> {
+    try {
+      if (user.verified) {
+        return {
+          ok: false,
+          error: 'You are already verified.',
+        };
+      }
+      const verification = await this.verification.findOne({
+        code: verifiedEmailInput.code,
+      });
+      if (!verification) {
+        return {
+          ok: false,
+          error: 'Wrong code.',
+        };
+      }
+      if (verification.userId !== user.id) {
+        return {
+          ok: false,
+          error: 'You are not authorized.',
+        };
+      }
+      await this.users.update({ id: user.id }, { verified: true });
+      await this.verification.delete({ code: verifiedEmailInput.code });
       return {
         ok: true,
       };

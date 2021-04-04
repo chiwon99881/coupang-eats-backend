@@ -24,7 +24,7 @@
     "@nestjs/common": "^7.5.1",
     "@nestjs/config": "^0.6.3",
     "@nestjs/core": "^7.5.1",
-    "@nestjs/graphql": "^7.9.10",
+    "@nestjs/graphql": "^7.10.3",
     "@nestjs/platform-express": "^7.5.1",
     "@nestjs/typeorm": "^7.1.5",
     "@types/mailgun-js": "^0.22.11",
