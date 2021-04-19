@@ -1,8 +1,9 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { IsJSON } from 'class-validator';
 import { CoreEntity } from 'src/core/entities/core.entity';
-import { Dish } from 'src/restaurants/entities/dish.entity';
+import { Dish, DishOption } from 'src/restaurants/entities/dish.entity';
 import { User } from 'src/users/entities/users.entity';
-import { Entity, ManyToMany, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
 
 @InputType('OrderInputType', { isAbstract: true })
 @ObjectType()
@@ -12,11 +13,16 @@ export class Order extends CoreEntity {
   @ManyToOne((type) => User, (user) => user.orders)
   client: User;
 
-  @Field((type) => User)
-  @ManyToOne((type) => User, (user) => user.orders)
-  delivery: User;
+  @Field((type) => User, { nullable: true })
+  @ManyToOne((type) => User, (user) => user.orders, { nullable: true })
+  delivery?: User;
 
   @Field((type) => [Dish])
   @ManyToMany((type) => Dish, (dish) => dish.orders)
   dishes: Dish[];
+
+  @Field((type) => [DishOption], { nullable: true })
+  @Column({ type: 'json', nullable: true })
+  @IsJSON()
+  dishOption?: DishOption[];
 }
