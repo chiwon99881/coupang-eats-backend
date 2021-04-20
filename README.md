@@ -71,3 +71,5 @@
 - #24 Order Entity
 
 - #25 Order Mutation 1
+
+- #26 Order Mutation 2

@@ -18,7 +18,7 @@ export class Order extends CoreEntity {
   delivery?: User;
 
   @Field((type) => [Dish])
-  @ManyToMany((type) => Dish, (dish) => dish.orders)
+  @ManyToMany((type) => Dish, (dish) => dish.orders, { eager: true })
   dishes: Dish[];
 
   @Field((type) => [DishOption], { nullable: true })
