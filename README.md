@@ -73,3 +73,5 @@
 - #25 Order Mutation 1
 
 - #26 Order Mutation 2
+
+- #27 Get Order Query

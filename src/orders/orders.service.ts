@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Dish } from 'src/restaurants/entities/dish.entity';
 import { User } from 'src/users/entities/users.entity';
 import { Repository } from 'typeorm';
+import { GetOrderInput, GetOrderOutput } from './dtos/get-order.dto';
 import { OrderInput, OrderOutput } from './dtos/order.dto';
 import { Order } from './entities/order.entity';
 
@@ -54,6 +55,28 @@ export class OrdersService {
           ok: true,
         };
       }
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async getOrder(getOrderInput: GetOrderInput): Promise<GetOrderOutput> {
+    try {
+      const { id } = getOrderInput;
+      const order = await this.orders.findOne({ id });
+      if (!order) {
+        return {
+          ok: false,
+          error: 'Order not found.',
+        };
+      }
+      return {
+        ok: true,
+        order,
+      };
     } catch (error) {
       return {
         ok: false,

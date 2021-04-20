@@ -29,7 +29,7 @@ export class User extends CoreEntity {
   email: string;
 
   @Field((type) => String)
-  @Column()
+  @Column({ select: false })
   @IsString()
   password: string;
 
@@ -69,8 +69,8 @@ export class User extends CoreEntity {
   })
   restaurants?: Restaurant[];
 
-  @Field(type => [Order], {nullable: true})
-  @OneToMany(type => Order, order => order.client, {nullable: true})
+  @Field((type) => [Order], { nullable: true })
+  @OneToMany((type) => Order, (order) => order.client, { nullable: true })
   orders?: Order[];
 
   @BeforeInsert()

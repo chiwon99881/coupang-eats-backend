@@ -10,7 +10,7 @@ import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
 @Entity()
 export class Order extends CoreEntity {
   @Field((type) => User)
-  @ManyToOne((type) => User, (user) => user.orders)
+  @ManyToOne((type) => User, (user) => user.orders, { eager: true })
   client: User;
 
   @Field((type) => User, { nullable: true })
