@@ -101,19 +101,21 @@ export class OrdersService {
           ok: true,
         };
       } else if (
-        status === OrderStatus.COOKED ||
-        status === OrderStatus.COOKING
+        (status === OrderStatus.COOKED || status === OrderStatus.COOKING) &&
+        user.role === UserRole.Owner
       ) {
-        if (user.role === UserRole.Owner) {
-          await this.orders.update({ id }, { status });
-        }
+        await this.orders.update({ id }, { status });
+        return {
+          ok: true,
+        };
       } else if (
-        status === OrderStatus.PICKUP ||
-        status === OrderStatus.DELIVERED
+        (status === OrderStatus.PICKUP || status === OrderStatus.DELIVERED) &&
+        user.role === UserRole.Rider
       ) {
-        if (user.role == UserRole.Rider) {
-          await this.orders.update({ id }, { status });
-        }
+        await this.orders.update({ id }, { status });
+        return {
+          ok: true,
+        };
       } else {
         return {
           ok: false,

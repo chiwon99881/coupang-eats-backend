@@ -77,3 +77,5 @@
 - #27 Get Order Query
 
 - #28 Edit Order
+
+- #29 Edit Order Recap
