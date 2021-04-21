@@ -75,3 +75,5 @@
 - #26 Order Mutation 2
 
 - #27 Get Order Query
+
+- #28 Edit Order

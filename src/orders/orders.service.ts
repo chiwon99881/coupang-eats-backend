@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Dish } from 'src/restaurants/entities/dish.entity';
-import { User } from 'src/users/entities/users.entity';
+import { User, UserRole } from 'src/users/entities/users.entity';
 import { Repository } from 'typeorm';
+import {
+  EditStatusOrderInput,
+  EditStatusOrderOutput,
+} from './dtos/edit-status-order.dto';
 import { GetOrderInput, GetOrderOutput } from './dtos/get-order.dto';
 import { OrderInput, OrderOutput } from './dtos/order.dto';
-import { Order } from './entities/order.entity';
+import { Order, OrderStatus } from './entities/order.entity';
 
 @Injectable()
 export class OrdersService {
@@ -77,6 +81,45 @@ export class OrdersService {
         ok: true,
         order,
       };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async editOrder(
+    user: User,
+    editStatusOrderInput: EditStatusOrderInput,
+  ): Promise<EditStatusOrderOutput> {
+    try {
+      const { id, status } = editStatusOrderInput;
+      if (status === OrderStatus.REJECTED && user.role !== UserRole.Rider) {
+        await this.orders.update({ id }, { status });
+        return {
+          ok: true,
+        };
+      } else if (
+        status === OrderStatus.COOKED ||
+        status === OrderStatus.COOKING
+      ) {
+        if (user.role === UserRole.Owner) {
+          await this.orders.update({ id }, { status });
+        }
+      } else if (
+        status === OrderStatus.PICKUP ||
+        status === OrderStatus.DELIVERED
+      ) {
+        if (user.role == UserRole.Rider) {
+          await this.orders.update({ id }, { status });
+        }
+      } else {
+        return {
+          ok: false,
+          error: "You can't do this.",
+        };
+      }
     } catch (error) {
       return {
         ok: false,
