@@ -40,8 +40,14 @@ export class OrdersResolver {
     return this.ordersService.editOrder(user, editStatusOrderInput);
   }
 
+  @Mutation(returns => Boolean)
+  hiMutation() {
+    pubSub.publish('hi', {hiSubscription: "true"});
+    return true;
+  }
+
   @Subscription(returns => String)
-  hi() {
+  hiSubscription() {
     return pubSub.asyncIterator('hi')
   }
 }

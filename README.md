@@ -81,3 +81,11 @@
 - #29 Edit Order Recap
 
 - #30 Subscription 1
+
+  > 우선 Subscription을 사용하려면 Subscription은 http 프로토콜이 아님을 알아야 한다.
+  > http 프로토콜과 다른 프로토콜인 ws프로토콜을 사용해야 하고 그렇기 때문에 지금까지 사용했던 http 프로토콜이랑은 별개의 연결을 해줘야 한다.
+
+- #31 Subscription 2
+
+  > Subscripton의 pubSub은 asyncIterator와 publish로 크게 볼 수 있는데 publish는 subscription을 쏘는 친구고 asyncIterator는 쏜 것을 받는 친구라고 보면 된다.
+  > publish는 2개의 args중 payload라는 아이를 가지는데 그 아이는 Subscription의 function이름이 된다.
