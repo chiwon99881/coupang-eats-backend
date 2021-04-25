@@ -1,7 +1,8 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { CurrentUser } from 'src/core/core.decorator';
-import { Role } from 'src/core/core.guard';
+import { isLoggedGuard, Role } from 'src/core/core.guard';
 import { User, UserRole } from 'src/users/entities/users.entity';
 import {
   EditStatusOrderInput,
@@ -25,14 +26,16 @@ export class OrdersResolver {
   }
 
   @Query((returns) => GetOrderOutput)
+  @UseGuards(isLoggedGuard)
   getOrder(
     @CurrentUser() user: User,
     @Args('input') getOrderInput: GetOrderInput,
   ): Promise<GetOrderOutput> {
     return this.ordersService.getOrder(getOrderInput);
   }
- 
+
   @Mutation((returns) => EditStatusOrderOutput)
+  @UseGuards(isLoggedGuard)
   editOrder(
     @CurrentUser() user: User,
     @Args('input') editStatusOrderInput: EditStatusOrderInput,
@@ -40,15 +43,18 @@ export class OrdersResolver {
     return this.ordersService.editOrder(user, editStatusOrderInput);
   }
 
-  @Mutation(returns => Boolean)
-  hiMutation() {
-    pubSub.publish('hi', {hiSubscription: "true"});
+  @Mutation((returns) => Boolean)
+  @UseGuards(isLoggedGuard)
+  @Role(UserRole.Client)
+  hiMutation(@CurrentUser() user: User) {
+    console.log(user);
+    pubSub.publish('hi', { hiSubscription: 'true' });
     return true;
   }
 
-  @Subscription(returns => String)
+  @Subscription((returns) => String)
+  @Role(UserRole.Client)
   hiSubscription() {
-    return pubSub.asyncIterator('hi')
+    return pubSub.asyncIterator('hi');
   }
 }
-

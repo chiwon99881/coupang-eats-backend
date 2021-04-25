@@ -29,6 +29,7 @@ export class UsersResolver {
   }
 
   @Mutation((returns) => EditUserOutput)
+  @UseGuards(isLoggedGuard)
   editUser(
     @CurrentUser() user: User,
     @Args('input') editUserInput: EditUserInput,

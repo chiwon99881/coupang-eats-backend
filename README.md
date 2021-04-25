@@ -89,3 +89,13 @@
 
   > Subscripton의 pubSub은 asyncIterator와 publish로 크게 볼 수 있는데 publish는 subscription을 쏘는 친구고 asyncIterator는 쏜 것을 받는 친구라고 보면 된다.
   > publish는 2개의 args중 payload라는 아이를 가지는데 그 아이는 Subscription의 function이름이 된다.
+
+- #32 Subscription 3 (Authentication)
+
+  > 기존에는 http headers에서 토큰을 받아 토큰으로 유저를 찾아냈지만 Subscription은 http가 아니라 headers가 없다 그래서 인증할 다른 방법을 찾아야 한다.
+  > Subscription은 토큰을 connection의 context에서 알려주기 때문에 connection의 context에서 토큰을 받아와야 한다.
+  > 받아오는 것 까지 좋은데 그 토큰으로 유저 인증을 해야하는데 기존에 JwtMiddleware에서 인증을 했는데 얘는 이제 Subscription일 때는 사용이 불가함 Subscription은 request,response라는 개념이 없기 떄문에
+  > 그러니까 전역으로 사용되는 AuthGuard에서 이제 토큰을 통해 인증을 해줘야함 그래서 JwtMiddleware를 지우고 AuthGuard에 토큰인증 로직을 넣은 것
+  > 여기까지도 좋은데 만약, 롤은 필요없지만 로그인은 되어있어야 한다면? 그래서 내가 CurrentUser Decorator를 통해 유저를 알아내야 하는 Resolver라면?
+  > 이러면 또 문제가 하나 생긴다. AuthGuard에서는 Role이 없을때 바로 true를 리턴하게 만들었기 때문에 ctx에 유저를 넣지 않는다. 그래서 ctx에서 유저를 가져오는 CurrentUser Decorator가 User를 못가져온다.
+  > 그렇기 때문에 AuthGuard에서 롤은 없지만 ctx 내부에 token이 있다면 token을 해석하여 ctx에 유저를 추가하게끔 만들어줬다.
