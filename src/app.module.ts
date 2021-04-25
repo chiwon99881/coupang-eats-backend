@@ -42,9 +42,15 @@ import { Order } from './orders/entities/order.entity';
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
-      context: ({ req }) => {
-        req['user'] = req.user;
-        return req;
+      installSubscriptionHandlers: true,
+        
+      context: ({ req, connection }) => {
+        if(req) {
+          req['user'] = req.user;
+          return req;
+        } else {
+          console.log(connection);
+        }
       },
     }),
     TypeOrmModule.forRoot({

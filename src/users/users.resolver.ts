@@ -1,5 +1,7 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/core/core.decorator';
+import { isLoggedGuard } from 'src/core/core.guard';
 import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
 import { EditUserInput, EditUserOutput } from './dtos/edit-user.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
@@ -40,6 +42,7 @@ export class UsersResolver {
   }
 
   @Mutation((returns) => VerifiedEmailOutput)
+  @UseGuards(isLoggedGuard)
   verifiedEmail(
     @CurrentUser() user: User,
     @Args('input') verifiedEmailInput: VerifiedEmailInput,
