@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,7 +8,6 @@ import * as Joi from 'joi';
 import { Restaurant } from './restaurants/entities/restaurants.entity';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/users.entity';
-import { JwtMiddleware } from './core/core.middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './core/core.guard';
 import { Category } from './restaurants/entities/category.entity';
@@ -43,9 +37,11 @@ import { Order } from './orders/entities/order.entity';
     GraphQLModule.forRoot({
       autoSchemaFile: true,
       installSubscriptionHandlers: true,
-        
+
       context: ({ req, connection }) => {
-          return { token: req ? req.headers['x-jwt'] : connection.context['x-jwt'] }
+        return {
+          token: req ? req.headers['x-jwt'] : connection.context['x-jwt'],
+        };
       },
     }),
     TypeOrmModule.forRoot({

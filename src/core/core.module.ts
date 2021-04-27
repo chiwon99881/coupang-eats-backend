@@ -1,6 +1,7 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
+import { PubSub } from 'graphql-subscriptions';
 import { UsersService } from 'src/users/users.service';
-import { PRIVATE_KEY } from './core.constants';
+import { PRIVATE_KEY, PUB_SUB } from './core.constants';
 import { CoreService } from './core.service';
 
 interface Options {
@@ -18,9 +19,13 @@ export class CoreModule {
           provide: PRIVATE_KEY,
           useValue: options.privateKey,
         },
+        {
+          provide: PUB_SUB,
+          useValue: new PubSub(),
+        },
         CoreService,
       ],
-      exports: [CoreService],
+      exports: [CoreService, PUB_SUB],
     };
   }
 }

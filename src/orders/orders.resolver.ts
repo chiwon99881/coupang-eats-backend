@@ -1,6 +1,7 @@
-import { UseGuards } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
+import { PUB_SUB } from 'src/core/core.constants';
 import { CurrentUser } from 'src/core/core.decorator';
 import { isLoggedGuard, Role } from 'src/core/core.guard';
 import { User, UserRole } from 'src/users/entities/users.entity';
@@ -13,11 +14,12 @@ import { OrderInput, OrderOutput } from './dtos/order.dto';
 import { Order } from './entities/order.entity';
 import { OrdersService } from './orders.service';
 
-const pubSub = new PubSub();
-
 @Resolver((of) => Order)
 export class OrdersResolver {
-  constructor(private readonly ordersService: OrdersService) {}
+  constructor(
+    private readonly ordersService: OrdersService,
+    @Inject(PUB_SUB) private readonly pubSub: PubSub,
+  ) {}
 
   @Mutation((returns) => OrderOutput)
   @Role(UserRole.Client)
@@ -44,17 +46,21 @@ export class OrdersResolver {
   }
 
   @Mutation((returns) => Boolean)
-  @UseGuards(isLoggedGuard)
-  @Role(UserRole.Client)
-  hiMutation(@CurrentUser() user: User) {
-    console.log(user);
-    pubSub.publish('hi', { hiSubscription: 'true' });
+  async fakeOrder() {
+    await this.pubSub.publish('getOrderToOwner', {
+      getOrderSubscription: { ok: true },
+    });
     return true;
   }
 
-  @Subscription((returns) => String)
-  @Role(UserRole.Client)
-  hiSubscription() {
-    return pubSub.asyncIterator('hi');
+  @Subscription((returns) => GetOrderOutput, {
+    filter: (payload, variables, context) => {
+      console.log(payload, variables, context);
+      return true;
+    },
+  })
+  @Role(UserRole.Owner)
+  getOrderSubscription() {
+    return this.pubSub.asyncIterator('getOrderToOwner');
   }
 }

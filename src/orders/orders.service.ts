@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PubSub } from 'graphql-subscriptions';
+import { PUB_SUB } from 'src/core/core.constants';
 import { Dish } from 'src/restaurants/entities/dish.entity';
 import { User, UserRole } from 'src/users/entities/users.entity';
 import { Repository } from 'typeorm';
@@ -17,6 +19,7 @@ export class OrdersService {
     @InjectRepository(Order) private readonly orders: Repository<Order>,
     @InjectRepository(User) private readonly users: Repository<User>,
     @InjectRepository(Dish) private readonly dishes: Repository<Dish>,
+    @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
   checkDishExisted = async (dishList: number[]): Promise<[boolean, Dish[]]> => {

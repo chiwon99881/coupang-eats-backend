@@ -99,3 +99,5 @@
   > 여기까지도 좋은데 만약, 롤은 필요없지만 로그인은 되어있어야 한다면? 그래서 내가 CurrentUser Decorator를 통해 유저를 알아내야 하는 Resolver라면?
   > 이러면 또 문제가 하나 생긴다. AuthGuard에서는 Role이 없을때 바로 true를 리턴하게 만들었기 때문에 ctx에 유저를 넣지 않는다. 그래서 ctx에서 유저를 가져오는 CurrentUser Decorator가 User를 못가져온다.
   > 그렇기 때문에 AuthGuard에서 롤은 없지만 ctx 내부에 token이 있다면 token을 해석하여 ctx에 유저를 추가하게끔 만들어줬다.
+
+- #33 Subscription 4 (Filter)
