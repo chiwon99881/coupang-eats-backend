@@ -39,6 +39,7 @@ export class OrdersService {
 
   async order(user: User, orderInput: OrderInput): Promise<OrderOutput> {
     try {
+      let order: Order;
       const { dishesId, dishOption } = orderInput;
       const [check, getDishes] = await this.checkDishExisted(dishesId);
       if (!check) {
@@ -48,16 +49,24 @@ export class OrdersService {
         };
       }
       if (dishOption) {
-        await this.orders.save(
-          this.orders.create({ client: user, dishes: getDishes, dishOption }),
-        );
+        order = this.orders.create({
+          client: user,
+          dishes: getDishes,
+          dishOption,
+        });
+        await this.orders.save(order);
+        this.pubSub.publish('getOrderToOwner', {
+          getOrderSubscription: { ok: true, order },
+        });
         return {
           ok: true,
         };
       } else {
-        await this.orders.save(
-          this.orders.create({ client: user, dishes: getDishes }),
-        );
+        order = this.orders.create({ client: user, dishes: getDishes });
+        await this.orders.save(order);
+        this.pubSub.publish('getOrderToOwner', {
+          getOrderSubscription: { ok: true, order },
+        });
         return {
           ok: true,
         };

@@ -101,3 +101,5 @@
   > 그렇기 때문에 AuthGuard에서 롤은 없지만 ctx 내부에 token이 있다면 token을 해석하여 ctx에 유저를 추가하게끔 만들어줬다.
 
 - #33 Subscription 4 (Filter)
+
+- #34 Subscription 5

@@ -67,6 +67,7 @@ export class Dish extends CoreEntity {
   @Field((type) => Restaurant)
   @ManyToOne((type) => Restaurant, (restaurant) => restaurant.dishes, {
     onDelete: 'CASCADE',
+    eager: true,
   })
   restaurant: Restaurant;
 
