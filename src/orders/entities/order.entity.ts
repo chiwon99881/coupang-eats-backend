@@ -4,7 +4,7 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
-import { IsJSON } from 'class-validator';
+import { IsJSON, IsNumber } from 'class-validator';
 import { CoreEntity } from 'src/core/entities/core.entity';
 import { Dish, DishOption } from 'src/restaurants/entities/dish.entity';
 import { User } from 'src/users/entities/users.entity';
@@ -40,6 +40,11 @@ export class Order extends CoreEntity {
   @Field((type) => [Dish])
   @ManyToMany((type) => Dish, (dish) => dish.orders, { eager: true })
   dishes: Dish[];
+
+  @Field((type) => Number, { defaultValue: 0 })
+  @Column({ default: 0 })
+  @IsNumber()
+  totalPrice: number;
 
   @Field((type) => [DishOption], { nullable: true })
   @Column({ type: 'json', nullable: true })

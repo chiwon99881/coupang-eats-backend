@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
 import { PUB_SUB } from 'src/core/core.constants';
-import { Dish } from 'src/restaurants/entities/dish.entity';
+import { Dish, DishOption } from 'src/restaurants/entities/dish.entity';
 import { Restaurant } from 'src/restaurants/entities/restaurants.entity';
 import { User, UserRole } from 'src/users/entities/users.entity';
 import { Repository } from 'typeorm';
@@ -24,6 +24,26 @@ export class OrdersService {
     private readonly restaurants: Repository<Restaurant>,
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
+
+  sumTotalPrice = async (
+    dishList: number[],
+    dishOption: DishOption[],
+  ): Promise<number> => {
+    let total: number = 0;
+    for (const dishId of dishList) {
+      const dish = await this.dishes.findOne({ id: dishId });
+      total += dish.price;
+    }
+    for (const option of dishOption) {
+      if (option.extraPrice) total += option.extraPrice;
+      if (option.choice) {
+        for (const choice of option.choice) {
+          if (choice.extraPrice) total += choice.extraPrice;
+        }
+      }
+    }
+    return total;
+  };
 
   checkDishExisted = async (dishList: number[]): Promise<[boolean, Dish[]]> => {
     let result = true;
@@ -55,11 +75,14 @@ export class OrdersService {
       const restaurant = await this.restaurants.findOne({
         id: dish.restaurantId,
       });
+      const totalPrice = await this.sumTotalPrice(dishesId, dishOption);
+      console.log(totalPrice);
       if (dishOption) {
         order = this.orders.create({
           client: user,
           dishes: getDishes,
           dishOption,
+          totalPrice,
         });
         await this.orders.save(order);
         this.pubSub.publish('getOrderToOwner', {
@@ -69,7 +92,11 @@ export class OrdersService {
           ok: true,
         };
       } else {
-        order = this.orders.create({ client: user, dishes: getDishes });
+        order = this.orders.create({
+          client: user,
+          dishes: getDishes,
+          totalPrice,
+        });
         await this.orders.save(order);
         this.pubSub.publish('getOrderToOwner', {
           getOrderSubscription: { order, restaurantOwner: restaurant.owner },

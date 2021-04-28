@@ -107,3 +107,5 @@
 - #35 Subscription 6 (getOrderSubscription for Owner)
 
   > resolve function은 해당 Subscription함수가 리턴하는 값을 조정할 수 있게 하는 함수이다.
+
+- #36 Total Price Sum
