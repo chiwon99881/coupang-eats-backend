@@ -45,19 +45,21 @@ export class OrdersResolver {
     return this.ordersService.editOrder(user, editStatusOrderInput);
   }
 
-  @Mutation((returns) => Boolean)
-  async fakeOrder() {
-    await this.pubSub.publish('getOrderToOwner', {
-      getOrderSubscription: { ok: true },
-    });
-    return true;
-  }
-
-  @Subscription((returns) => GetOrderOutput, {
-    filter: (payload, variables, context) => {
-      console.log(payload, variables, context);
-      return true;
+  @Subscription((returns) => Order, {
+    filter: (
+      {
+        getOrderSubscription: { restaurantOwner },
+      }: { getOrderSubscription: { restaurantOwner: User } },
+      _,
+      { user }: { user: User },
+    ) => {
+      return restaurantOwner.id === user.id;
     },
+    resolve: ({
+      getOrderSubscription: { order },
+    }: {
+      getOrderSubscription: { order: Order };
+    }) => order,
   })
   @Role(UserRole.Owner)
   getOrderSubscription() {

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
 import { PUB_SUB } from 'src/core/core.constants';
 import { Dish } from 'src/restaurants/entities/dish.entity';
+import { Restaurant } from 'src/restaurants/entities/restaurants.entity';
 import { User, UserRole } from 'src/users/entities/users.entity';
 import { Repository } from 'typeorm';
 import {
@@ -19,6 +20,8 @@ export class OrdersService {
     @InjectRepository(Order) private readonly orders: Repository<Order>,
     @InjectRepository(User) private readonly users: Repository<User>,
     @InjectRepository(Dish) private readonly dishes: Repository<Dish>,
+    @InjectRepository(Restaurant)
+    private readonly restaurants: Repository<Restaurant>,
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
@@ -48,6 +51,10 @@ export class OrdersService {
           error: 'One or more of the selected foods is invalid.',
         };
       }
+      const dish = await this.dishes.findOne({ id: getDishes[0].id });
+      const restaurant = await this.restaurants.findOne({
+        id: dish.restaurantId,
+      });
       if (dishOption) {
         order = this.orders.create({
           client: user,
@@ -56,7 +63,7 @@ export class OrdersService {
         });
         await this.orders.save(order);
         this.pubSub.publish('getOrderToOwner', {
-          getOrderSubscription: { ok: true, order },
+          getOrderSubscription: { order, restaurantOwner: restaurant.owner },
         });
         return {
           ok: true,
@@ -65,7 +72,7 @@ export class OrdersService {
         order = this.orders.create({ client: user, dishes: getDishes });
         await this.orders.save(order);
         this.pubSub.publish('getOrderToOwner', {
-          getOrderSubscription: { ok: true, order },
+          getOrderSubscription: { order, restaurantOwner: restaurant.owner },
         });
         return {
           ok: true,
