@@ -73,4 +73,28 @@ export class OrdersResolver {
   cookedOrder() {
     return this.pubSub.asyncIterator('cookedOrder');
   }
+
+  @Subscription((returns) => Order, {
+    filter: (
+      {
+        changeOrder: { order, restaurantOwner },
+      }: { changeOrder: { order: Order; restaurantOwner: User } },
+      _,
+      { user }: { user: User },
+    ) => {
+      return (
+        order.client.id === user.id ||
+        order.rider?.id === user.id ||
+        restaurantOwner.id === user.id
+      );
+    },
+    resolve: ({ changeOrder: { order } }: { changeOrder: { order: Order } }) =>
+      order,
+  })
+  @UseGuards(isLoggedGuard)
+  changeOrder() {
+    return this.pubSub.asyncIterator('changeOrder');
+  }
+
+  // rider가 assign하는 mutation
 }

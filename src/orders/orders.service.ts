@@ -142,7 +142,12 @@ export class OrdersService {
     try {
       const { id, status } = editStatusOrderInput;
       const order = await this.orders.findOne({ id });
-      if (!order) {
+      const dishOne = await this.dishes.findOne({ id: order.dishes[0].id });
+      const restaurant = await this.restaurants.findOne({
+        id: dishOne.restaurantId,
+      });
+      const restaurantOwner = restaurant.owner;
+      if (!order || !dishOne || !restaurant) {
         return {
           ok: false,
           error: 'Order not found.',
@@ -150,6 +155,9 @@ export class OrdersService {
       }
       if (status === OrderStatus.REJECTED && user.role !== UserRole.Rider) {
         await this.orders.update({ id }, { status });
+        this.pubSub.publish('changeOrder', {
+          changeOrder: { order: { ...order, status }, restaurantOwner },
+        });
         return {
           ok: true,
         };
@@ -158,9 +166,12 @@ export class OrdersService {
         user.role === UserRole.Owner
       ) {
         await this.orders.update({ id }, { status });
+        this.pubSub.publish('changeOrder', {
+          changeOrder: { order: { ...order, status }, restaurantOwner },
+        });
         if (status === OrderStatus.COOKED) {
           this.pubSub.publish('cookedOrder', {
-            cookedOrder: { ...order, status },
+            cookedOrder: { order: { ...order, status } },
           });
         }
         return {
@@ -170,6 +181,9 @@ export class OrdersService {
         (status === OrderStatus.PICKUP || status === OrderStatus.DELIVERED) &&
         user.role === UserRole.Rider
       ) {
+        this.pubSub.publish('changeOrder', {
+          changeOrder: { order: { ...order, status }, restaurantOwner },
+        });
         await this.orders.update({ id }, { status });
         return {
           ok: true,

@@ -31,7 +31,7 @@ export class Order extends CoreEntity {
 
   @Field((type) => User, { nullable: true })
   @ManyToOne((type) => User, (user) => user.orders, { nullable: true })
-  delivery?: User;
+  rider?: User;
 
   @Field((type) => OrderStatus)
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })

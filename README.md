@@ -111,3 +111,5 @@
 - #36 Total Price Sum
 
 - #37 Subscription 7 (cookedOrder for Rider)
+
+- #38 Subscription 8 (changeOrder for everyone)
