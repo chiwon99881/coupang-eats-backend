@@ -141,6 +141,13 @@ export class OrdersService {
   ): Promise<EditStatusOrderOutput> {
     try {
       const { id, status } = editStatusOrderInput;
+      const order = await this.orders.findOne({ id });
+      if (!order) {
+        return {
+          ok: false,
+          error: 'Order not found.',
+        };
+      }
       if (status === OrderStatus.REJECTED && user.role !== UserRole.Rider) {
         await this.orders.update({ id }, { status });
         return {
@@ -151,6 +158,11 @@ export class OrdersService {
         user.role === UserRole.Owner
       ) {
         await this.orders.update({ id }, { status });
+        if (status === OrderStatus.COOKED) {
+          this.pubSub.publish('cookedOrder', {
+            cookedOrder: { ...order, status },
+          });
+        }
         return {
           ok: true,
         };

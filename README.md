@@ -109,3 +109,5 @@
   > resolve function은 해당 Subscription함수가 리턴하는 값을 조정할 수 있게 하는 함수이다.
 
 - #36 Total Price Sum
+
+- #37 Subscription 7 (cookedOrder for Rider)

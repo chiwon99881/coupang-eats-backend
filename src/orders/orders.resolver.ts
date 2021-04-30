@@ -61,8 +61,16 @@ export class OrdersResolver {
       getOrderSubscription: { order: Order };
     }) => order,
   })
+  @UseGuards(isLoggedGuard)
   @Role(UserRole.Owner)
   getOrderSubscription() {
     return this.pubSub.asyncIterator('getOrderToOwner');
+  }
+
+  @Subscription((returns) => Order)
+  @UseGuards(isLoggedGuard)
+  @Role(UserRole.Rider)
+  cookedOrder() {
+    return this.pubSub.asyncIterator('cookedOrder');
   }
 }
