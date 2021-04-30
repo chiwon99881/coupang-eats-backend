@@ -6,6 +6,7 @@ import { Dish, DishOption } from 'src/restaurants/entities/dish.entity';
 import { Restaurant } from 'src/restaurants/entities/restaurants.entity';
 import { User, UserRole } from 'src/users/entities/users.entity';
 import { Repository } from 'typeorm';
+import { AssignRiderInput, AssignRiderOutput } from './dtos/assign-rider.dto';
 import {
   EditStatusOrderInput,
   EditStatusOrderOutput,
@@ -194,6 +195,47 @@ export class OrdersService {
           error: "You can't do this.",
         };
       }
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async assignRider(
+    user: User,
+    assignRiderInput: AssignRiderInput,
+  ): Promise<AssignRiderOutput> {
+    try {
+      const { id } = assignRiderInput;
+      const order = await this.orders.findOne({ id }, { relations: ['rider'] });
+      const dishOne = await this.dishes.findOne({ id: order.dishes[0].id });
+      const restaurant = await this.restaurants.findOne({
+        id: dishOne.restaurantId,
+      });
+      if (!order) {
+        return {
+          ok: false,
+          error: 'Order not found.',
+        };
+      }
+      if (order.rider) {
+        return {
+          ok: false,
+          error: 'Rider has already been assigned.',
+        };
+      }
+      await this.orders.update({ id }, { rider: user });
+      this.pubSub.publish('changeOrder', {
+        changeOrder: {
+          order: { ...order, rider: user },
+          restaurantOwner: restaurant.owner,
+        },
+      });
+      return {
+        ok: true,
+      };
     } catch (error) {
       return {
         ok: false,

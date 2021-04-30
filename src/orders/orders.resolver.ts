@@ -5,6 +5,7 @@ import { PUB_SUB } from 'src/core/core.constants';
 import { CurrentUser } from 'src/core/core.decorator';
 import { isLoggedGuard, Role } from 'src/core/core.guard';
 import { User, UserRole } from 'src/users/entities/users.entity';
+import { AssignRiderInput, AssignRiderOutput } from './dtos/assign-rider.dto';
 import {
   EditStatusOrderInput,
   EditStatusOrderOutput,
@@ -82,6 +83,7 @@ export class OrdersResolver {
       _,
       { user }: { user: User },
     ) => {
+      console.log(order, user);
       return (
         order.client.id === user.id ||
         order.rider?.id === user.id ||
@@ -96,5 +98,13 @@ export class OrdersResolver {
     return this.pubSub.asyncIterator('changeOrder');
   }
 
-  // rider가 assign하는 mutation
+  @Mutation((returns) => AssignRiderOutput)
+  @UseGuards(isLoggedGuard)
+  @Role(UserRole.Rider)
+  assignRider(
+    @CurrentUser() user: User,
+    @Args('input') assignRiderInput: AssignRiderInput,
+  ): Promise<AssignRiderOutput> {
+    return this.ordersService.assignRider(user, assignRiderInput);
+  }
 }

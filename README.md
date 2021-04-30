@@ -113,3 +113,5 @@
 - #37 Subscription 7 (cookedOrder for Rider)
 
 - #38 Subscription 8 (changeOrder for everyone)
+
+- #39 Subscription 9 (assignRider Mutation)
