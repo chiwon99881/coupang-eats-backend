@@ -37,7 +37,6 @@ import { Order } from './orders/entities/order.entity';
     GraphQLModule.forRoot({
       autoSchemaFile: true,
       installSubscriptionHandlers: true,
-
       context: ({ req, connection }) => {
         return {
           token: req ? req.headers['x-jwt'] : connection.context['x-jwt'],

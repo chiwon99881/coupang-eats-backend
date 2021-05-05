@@ -70,7 +70,9 @@ export class User extends CoreEntity {
   restaurants?: Restaurant[];
 
   @Field((type) => [Order], { nullable: true })
-  @OneToMany((type) => Order, (order) => order.client, { nullable: true })
+  @OneToMany((type) => Order, (order) => order.client, {
+    nullable: true,
+  })
   orders?: Order[];
 
   @BeforeInsert()

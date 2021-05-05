@@ -1,3 +1,4 @@
+import { SearchOutput, SearchInput } from './dtos/search.dto';
 import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
@@ -106,5 +107,11 @@ export class OrdersResolver {
     @Args('input') assignRiderInput: AssignRiderInput,
   ): Promise<AssignRiderOutput> {
     return this.ordersService.assignRider(user, assignRiderInput);
+  }
+
+  @Query((returns) => SearchOutput)
+  @UseGuards(isLoggedGuard)
+  search(@Args('input') searchInput: SearchInput): Promise<SearchOutput> {
+    return this.ordersService.search(searchInput);
   }
 }

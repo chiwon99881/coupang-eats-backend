@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
 import { EditUserInput, EditUserOutput } from './dtos/edit-user.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
+import { MeOutput } from './dtos/my-profile.dto';
 import {
   VerifiedEmailInput,
   VerifiedEmailOutput,
@@ -169,6 +170,31 @@ export class UsersService {
       await this.verification.delete({ code: verifiedEmailInput.code });
       return {
         ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async me(user: User): Promise<MeOutput> {
+    try {
+      const { id } = user;
+      const me = await this.users.findOne(
+        { id },
+        { relations: ['orders', 'restaurants'] },
+      );
+      if (!me) {
+        return {
+          ok: false,
+          error: 'User not found.',
+        };
+      }
+      return {
+        ok: true,
+        user: me,
       };
     } catch (error) {
       return {

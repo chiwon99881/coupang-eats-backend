@@ -5,6 +5,7 @@ import { isLoggedGuard } from 'src/core/core.guard';
 import { CreateUserInput, CreateUserOutput } from './dtos/create-user.dto';
 import { EditUserInput, EditUserOutput } from './dtos/edit-user.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
+import { MeOutput } from './dtos/my-profile.dto';
 import {
   VerifiedEmailInput,
   VerifiedEmailOutput,
@@ -49,5 +50,11 @@ export class UsersResolver {
     @Args('input') verifiedEmailInput: VerifiedEmailInput,
   ): Promise<VerifiedEmailOutput> {
     return this.usersService.verifiedEmail(user, verifiedEmailInput);
+  }
+
+  @Query((returns) => MeOutput)
+  @UseGuards(isLoggedGuard)
+  me(@CurrentUser() user: User): Promise<MeOutput> {
+    return this.usersService.me(user);
   }
 }

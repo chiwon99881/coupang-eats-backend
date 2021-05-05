@@ -115,3 +115,5 @@
 - #38 Subscription 8 (changeOrder for everyone)
 
 - #39 Subscription 9 (assignRider Mutation)
+
+- #40 Search Query

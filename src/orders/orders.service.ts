@@ -1,3 +1,4 @@
+import { SearchInput, SearchOutput } from './dtos/search.dto';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
@@ -5,7 +6,7 @@ import { PUB_SUB } from 'src/core/core.constants';
 import { Dish, DishOption } from 'src/restaurants/entities/dish.entity';
 import { Restaurant } from 'src/restaurants/entities/restaurants.entity';
 import { User, UserRole } from 'src/users/entities/users.entity';
-import { Repository } from 'typeorm';
+import { ILike, Raw, Repository } from 'typeorm';
 import { AssignRiderInput, AssignRiderOutput } from './dtos/assign-rider.dto';
 import {
   EditStatusOrderInput,
@@ -235,6 +236,42 @@ export class OrdersService {
       });
       return {
         ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async search(searchInput: SearchInput): Promise<SearchOutput> {
+    try {
+      const { key, page } = searchInput;
+      const offset = (page - 1) * 10;
+      const limit = page * 10;
+
+      const [dishes, dishCount] = await this.dishes.findAndCount({
+        order: { name: 'ASC' },
+        where: { name: ILike(`%${key}%`) },
+        skip: offset,
+        take: limit,
+      });
+      const [
+        restaurants,
+        restaurantsCount,
+      ] = await this.restaurants.findAndCount({
+        order: { name: 'ASC' },
+        where: { name: Raw((name) => `${name} ILIKE '%${key}%'`) },
+        skip: offset,
+        take: limit,
+      });
+      return {
+        ok: true,
+        dishes,
+        dishCount,
+        restaurants,
+        restaurantsCount,
       };
     } catch (error) {
       return {
