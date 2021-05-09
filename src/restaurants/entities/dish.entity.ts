@@ -2,6 +2,7 @@ import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { IsJSON, IsNumber, IsString } from 'class-validator';
 import { CoreEntity } from 'src/core/entities/core.entity';
 import { Order } from 'src/orders/entities/order.entity';
+import { User } from 'src/users/entities/users.entity';
 import {
   Column,
   Entity,
@@ -83,4 +84,8 @@ export class Dish extends CoreEntity {
   @ManyToMany((type) => Order, (order) => order.dishes)
   @JoinTable()
   orders?: Order[];
+
+  @Field((type) => [User], { nullable: true })
+  @ManyToMany((type) => User, (user) => user.favFood, { nullable: true })
+  like?: User[];
 }

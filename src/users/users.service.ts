@@ -184,7 +184,7 @@ export class UsersService {
       const { id } = user;
       const me = await this.users.findOne(
         { id },
-        { relations: ['orders', 'restaurants'] },
+        { relations: ['orders', 'restaurants', 'favFood'] },
       );
       if (!me) {
         return {

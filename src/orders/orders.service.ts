@@ -248,8 +248,8 @@ export class OrdersService {
   async search(searchInput: SearchInput): Promise<SearchOutput> {
     try {
       const { key, page } = searchInput;
-      const offset = (page - 1) * 10;
-      const limit = page * 10;
+      const offset = (page - 1) * 6;
+      const limit = page * 6;
 
       const [dishes, dishCount] = await this.dishes.findAndCount({
         order: { name: 'ASC' },

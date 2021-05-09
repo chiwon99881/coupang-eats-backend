@@ -117,3 +117,5 @@
 - #39 Subscription 9 (assignRider Mutation)
 
 - #40 Search Query
+
+- #41 FavFood 1

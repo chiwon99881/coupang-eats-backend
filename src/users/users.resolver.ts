@@ -55,6 +55,7 @@ export class UsersResolver {
   @Query((returns) => MeOutput)
   @UseGuards(isLoggedGuard)
   me(@CurrentUser() user: User): Promise<MeOutput> {
+    console.log(user);
     return this.usersService.me(user);
   }
 }

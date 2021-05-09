@@ -7,9 +7,18 @@ import {
 import { IsBoolean, IsEmail, IsEnum, IsString } from 'class-validator';
 import { CoreEntity } from 'src/core/entities/core.entity';
 import { Restaurant } from 'src/restaurants/entities/restaurants.entity';
-import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Order } from 'src/orders/entities/order.entity';
+import { Dish } from 'src/restaurants/entities/dish.entity';
 
 export enum UserRole {
   Client = 'Client',
@@ -74,6 +83,14 @@ export class User extends CoreEntity {
     nullable: true,
   })
   orders?: Order[];
+
+  @Field((type) => [Dish], { nullable: true })
+  @ManyToMany((type) => Dish, (dish) => dish.like, {
+    nullable: true,
+    eager: true,
+  })
+  @JoinTable()
+  favFood?: Dish[];
 
   @BeforeInsert()
   @BeforeUpdate()
