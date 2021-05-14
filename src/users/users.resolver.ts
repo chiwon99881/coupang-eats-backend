@@ -1,3 +1,4 @@
+import { LikeDishInput, LikeDishOutput } from './dtos/like-dish.dto';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/core/core.decorator';
@@ -57,5 +58,14 @@ export class UsersResolver {
   me(@CurrentUser() user: User): Promise<MeOutput> {
     console.log(user);
     return this.usersService.me(user);
+  }
+
+  @Mutation((returns) => LikeDishOutput)
+  @UseGuards(isLoggedGuard)
+  likeDish(
+    @CurrentUser() user: User,
+    @Args('input') likeDishInput: LikeDishInput,
+  ): Promise<LikeDishOutput> {
+    return this.usersService.likeDish(user, likeDishInput);
   }
 }

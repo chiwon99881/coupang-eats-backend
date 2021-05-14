@@ -87,5 +87,5 @@ export class Dish extends CoreEntity {
 
   @Field((type) => [User], { nullable: true })
   @ManyToMany((type) => User, (user) => user.favFood, { nullable: true })
-  like?: User[];
+  liked?: User[];
 }

@@ -1,3 +1,6 @@
+import { Dish } from 'src/restaurants/entities/dish.entity';
+import { LikeDishOutput } from './dtos/like-dish.dto';
+import { LikeDishInput } from './dtos/like-dish.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CoreService } from 'src/core/core.service';
@@ -18,6 +21,7 @@ import { Verification } from './entities/verification.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
+    @InjectRepository(Dish) private readonly dishes: Repository<Dish>,
     @InjectRepository(Verification)
     private readonly verification: Repository<Verification>,
     private readonly coreService: CoreService,
@@ -92,7 +96,10 @@ export class UsersService {
 
   async findUserById(userId: number): Promise<User | null> {
     try {
-      const user = await this.users.findOne({ id: userId });
+      const user = await this.users.findOne(
+        { id: userId },
+        { relations: ['favFood'] },
+      );
       if (user) {
         return user;
       }
@@ -195,6 +202,33 @@ export class UsersService {
       return {
         ok: true,
         user: me,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async likeDish(
+    user: User,
+    likeDishInput: LikeDishInput,
+  ): Promise<LikeDishOutput> {
+    try {
+      const { id: dishId } = likeDishInput;
+      const dish = await this.dishes.findOne({ id: dishId });
+      if (!dish) {
+        return {
+          ok: false,
+          error: 'Dish not found.',
+        };
+      }
+      const prevFavFood = user.favFood;
+      user.favFood = [...prevFavFood, dish];
+      await this.users.save(user);
+      return {
+        ok: true,
       };
     } catch (error) {
       return {

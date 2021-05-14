@@ -85,9 +85,8 @@ export class User extends CoreEntity {
   orders?: Order[];
 
   @Field((type) => [Dish], { nullable: true })
-  @ManyToMany((type) => Dish, (dish) => dish.like, {
+  @ManyToMany((type) => Dish, (dish) => dish.liked, {
     nullable: true,
-    eager: true,
   })
   @JoinTable()
   favFood?: Dish[];

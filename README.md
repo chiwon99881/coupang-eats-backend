@@ -119,3 +119,5 @@
 - #40 Search Query
 
 - #41 FavFood 1
+
+- #42 Like Dish Resolver
