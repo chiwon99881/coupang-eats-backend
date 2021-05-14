@@ -13,6 +13,7 @@ import {
 } from './dtos/verified-email.dto';
 import { User } from './entities/users.entity';
 import { UsersService } from './users.service';
+import { UnlikeDishOutput, UnlikeDishInput } from './dtos/unlike-dish.dto';
 
 @Resolver((of) => User)
 export class UsersResolver {
@@ -67,5 +68,14 @@ export class UsersResolver {
     @Args('input') likeDishInput: LikeDishInput,
   ): Promise<LikeDishOutput> {
     return this.usersService.likeDish(user, likeDishInput);
+  }
+
+  @Mutation((returns) => UnlikeDishOutput)
+  @UseGuards(isLoggedGuard)
+  unlikeDish(
+    @CurrentUser() user: User,
+    @Args('input') unlikeDishInput: UnlikeDishInput,
+  ): Promise<UnlikeDishOutput> {
+    return this.usersService.unlikeDish(user, unlikeDishInput);
   }
 }

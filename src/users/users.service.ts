@@ -1,3 +1,4 @@
+import { UnlikeDishInput, UnlikeDishOutput } from './dtos/unlike-dish.dto';
 import { Dish } from 'src/restaurants/entities/dish.entity';
 import { LikeDishOutput } from './dtos/like-dish.dto';
 import { LikeDishInput } from './dtos/like-dish.dto';
@@ -226,6 +227,41 @@ export class UsersService {
       }
       const prevFavFood = user.favFood;
       user.favFood = [...prevFavFood, dish];
+      await this.users.save(user);
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async unlikeDish(
+    user: User,
+    unlikeDishInput: UnlikeDishInput,
+  ): Promise<UnlikeDishOutput> {
+    try {
+      const { id: dishId } = unlikeDishInput;
+      const dish = await this.dishes.findOne({ id: dishId });
+      if (!dish) {
+        return {
+          ok: false,
+          error: 'Dish not found.',
+        };
+      }
+      if (user.favFood.length <= 0) {
+        return {
+          ok: false,
+          error: 'Your fav food 0.',
+        };
+      }
+      const newFavFood = user.favFood.filter((food) => {
+        return food.id !== dishId;
+      });
+      user.favFood = newFavFood;
       await this.users.save(user);
       return {
         ok: true,

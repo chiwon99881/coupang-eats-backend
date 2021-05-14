@@ -121,3 +121,5 @@
 - #41 FavFood 1
 
 - #42 Like Dish Resolver
+
+- #43 Unlike Dish Resolver
