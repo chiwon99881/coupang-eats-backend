@@ -4,7 +4,13 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
-import { IsBoolean, IsEmail, IsEnum, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsEnum,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 import { CoreEntity } from 'src/core/entities/core.entity';
 import { Restaurant } from 'src/restaurants/entities/restaurants.entity';
 import {
@@ -66,6 +72,16 @@ export class User extends CoreEntity {
   @Column()
   @IsString()
   address: string;
+
+  @Field((type) => String, { defaultValue: '0' })
+  @Column({ default: '0' })
+  @IsString()
+  lat: string;
+
+  @Field((type) => String, { defaultValue: '0' })
+  @Column({ default: '0' })
+  @IsString()
+  lng: string;
 
   @Field((type) => UserRole)
   @Column({ type: 'enum', enum: UserRole })

@@ -92,6 +92,7 @@ export class OrdersService {
         });
         return {
           ok: true,
+          order,
         };
       } else {
         order = this.orders.create({
@@ -105,6 +106,7 @@ export class OrdersService {
         });
         return {
           ok: true,
+          order,
         };
       }
     } catch (error) {

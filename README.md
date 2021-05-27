@@ -123,3 +123,5 @@
 - #42 Like Dish Resolver
 
 - #43 Unlike Dish Resolver
+
+- #44 User Coords Set

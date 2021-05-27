@@ -30,7 +30,10 @@ export class Order extends CoreEntity {
   client: User;
 
   @Field((type) => User, { nullable: true })
-  @ManyToOne((type) => User, (user) => user.orders, { nullable: true })
+  @ManyToOne((type) => User, (user) => user.orders, {
+    nullable: true,
+    eager: true,
+  })
   rider?: User;
 
   @Field((type) => OrderStatus)
